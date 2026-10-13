@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATI Invoice | Login</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --dark: #302f24;
+            --dark-circle: #403e2a;
+            --cream: #fbfaf6;
+            --gold: #d5b642;
+            --gold-dark: #a88927;
+            --text: #171713;
+            --muted: #77736a;
+            --border: #e1ddd2;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            padding: 3px;
+            background: #f4f1e8;
+            font-family: "Manrope", Arial, sans-serif;
+            color: var(--text);
+        }
+
+        .login-page {
+            position: relative;
+            min-height: calc(100vh - 3px);
+            overflow: hidden;
+            background: linear-gradient(135deg, #1b1912 0%, #2f2a1c 32%, #74632b 72%, #1b1912 100%);
+            background-size: 220% 220%;
+            animation: bgShift 18s ease-in-out infinite alternate;
+            isolation: isolate;
+        }
+
+        html, body {
+            width: 100%;
+            min-height: 100%;
+            background: #1b1912;
+        }
+
+        @keyframes bgShift {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        .circle {
+            position: absolute;
+            z-index: -1;
+            border-radius: 50%;
+            background: rgba(68, 62, 41, 0.88);
+            pointer-events: none;
+            animation: floatBlob 14s ease-in-out infinite;
+        }
+
+        @keyframes floatBlob {
+            0%, 100% {
+                transform: translate3d(0, 0, 0) scale(1);
+            }
+            50% {
+                transform: translate3d(20px, -20px, 0) scale(1.06);
+            }
+        }
+
+        .circle-top {
+            width: 245px;
+            height: 245px;
+            top: -25px;
+            right: -20px;
+            opacity: 0.95;
+            animation-delay: 0s;
+        }
+
+        .circle-left {
+            width: 330px;
+            height: 330px;
+            left: -102px;
+            top: 135px;
+            opacity: 0.75;
+            animation-delay: 1.2s;
+        }
+
+        .circle-bottom {
+            width: 470px;
+            height: 470px;
+            right: -190px;
+            bottom: -300px;
+            background: rgba(35, 33, 26, 0.95);
+            animation-delay: 2.1s;
+        }
+
+        .login-page.is-interacting .circle {
+            animation-play-state: paused;
+        }
+
+        .intro {
+            position: relative;
+            z-index: 1;
+            padding: 50px 47px 0;
+            color: white;
+            pointer-events: none;
+        }
+
+        .brand {
+            margin-bottom: 29px;
+            font-size: 27px;
+            line-height: 1.3;
+            font-weight: 800;
+            letter-spacing: -0.8px;
+        }
+
+        .eyebrow {
+            margin-bottom: 18px;
+            color: #e0bd3c;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 3px;
+        }
+
+        .intro h1 {
+            max-width: 340px;
+            margin-bottom: 15px;
+            font-size: 26px;
+            font-weight: 800;
+            line-height: 1.3;
+            letter-spacing: -0.7px;
+        }
+
+        .intro p {
+            max-width: 300px;
+            color: #f1efe8;
+            font-size: 11.5px;
+            line-height: 1.8;
+        }
+
+        .login-card {
+            position: relative;
+            top: -16px;
+            z-index: 2;
+            width: min(472px, calc(100% - 56px));
+            min-height: 505px;
+            margin: 80px auto 0;
+            padding: 30px 34px 35px;
+            border-radius: 18px;
+            background: var(--cream);
+            box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .card-heading {
+            margin-bottom: 35px;
+            text-align: center;
+        }
+
+        .card-heading h2 {
+            margin-bottom: 7px;
+            font-size: 25px;
+            font-weight: 800;
+            line-height: 1.35;
+            letter-spacing: -0.5px;
+            text-align: center;
+        }
+
+        .card-heading p {
+            color: var(--muted);
+            font-size: 11.5px;
+            line-height: 1.7;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 23px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 9px;
+            color: #514d44;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        .form-group input {
+            display: block;
+            width: 100%;
+            height: 50px;
+            padding: 0 15px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            outline: none;
+            background: #fff;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 11.5px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-group input::placeholder {
+            color: #8c877e;
+        }
+
+        .form-group input:focus {
+            border-color: var(--gold-dark);
+            box-shadow: 0 0 0 3px rgba(208, 169, 51, 0.13);
+        }
+
+        .login-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 48px;
+            margin-top: 31px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(110deg, #d8ba49, #ad8d2b);
+            color: white;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 800;
+            transition: filter 0.2s, transform 0.2s;
+        }
+
+        .login-button:hover {
+            filter: brightness(1.05);
+        }
+
+        .login-button:active {
+            transform: scale(0.99);
+        }
+
+        .register-text {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 29px;
+            margin-top: 28px;
+            color: #514d44;
+            font-size: 10.5px;
+        }
+
+        .register-text a {
+            color: #9c7917;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .register-text a:hover {
+            text-decoration: underline;
+        }
+
+        .authMsg {
+            min-height: 16px;
+            margin-bottom: 10px;
+            color: #b00000;
+            font-size: 12px;
+        }
+
+        .authMsg.success {
+            color: #1a7a1a;
+        }
+
+        .authWrapper[data-mode="register"] {
+            min-height: 0;
+            justify-content: flex-start;
+            padding: 35px 34px 26px;
+        }
+
+        .authSlide[aria-hidden="true"] {
+            display: none;
+        }
+
+        .register-slide {
+            width: 100%;
+        }
+
+        .register-slide .card-heading {
+            margin-bottom: 20px;
+        }
+
+        .register-slide .card-heading h2 {
+            margin-bottom: 4px;
+            font-size: 22px;
+        }
+
+        .register-slide .card-heading p {
+            font-size: 12px;
+        }
+
+        .register-form {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px 13px;
+        }
+
+        .register-form .form-group {
+            position: relative;
+            min-width: 0;
+            margin: 0;
+        }
+
+        .register-form .form-group.full-width,
+        .register-form .authMsg,
+        .register-form .login-button {
+            grid-column: 1 / -1;
+        }
+
+        .register-form .form-group label {
+            position: absolute;
+            z-index: 1;
+            top: 16px;
+            left: 14px;
+            margin: 0;
+            color: #8c877e;
+            font-size: 12px;
+            font-weight: 400;
+            letter-spacing: 0;
+            pointer-events: none;
+        }
+
+        .register-form .form-group input,
+        .register-form textarea {
+            width: 100%;
+            height: 43px;
+            padding: 0 13px;
+            border: 1px solid #dedede;
+            border-radius: 11px;
+            outline: none;
+            background: #fff;
+            color: var(--text);
+            font: 400 12px "Manrope", Arial, sans-serif;
+        }
+
+        .register-form .form-group input::placeholder,
+        .register-form textarea::placeholder {
+            color: #8c877e;
+            opacity: 1;
+        }
+
+        .register-form .form-group label:not([for="regUsername"]) {
+            display: none;
+        }
+
+        .register-form .form-group input:focus,
+        .register-form textarea:focus {
+            border-color: var(--gold-dark);
+            box-shadow: 0 0 0 2px rgba(208, 169, 51, 0.12);
+        }
+
+        .register-form .username-group input {
+            border-color: var(--gold-dark);
+            box-shadow: 0 0 0 2px rgba(208, 169, 51, 0.12);
+            padding-top: 2px;
+        }
+
+        .register-form .username-group label {
+            top: -7px;
+            left: 11px;
+            padding: 0 4px;
+            background: var(--cream);
+            color: var(--gold-dark);
+            font-size: 10px;
+        }
+
+        .register-form textarea {
+            display: block;
+            height: 66px;
+            padding-top: 13px;
+            resize: vertical;
+        }
+
+        .password-field input {
+            padding-right: 43px !important;
+        }
+
+        .password-field .password-toggle {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            display: grid;
+            width: 31px;
+            height: 31px;
+            place-items: center;
+            border: 1px solid #ededed;
+            border-radius: 7px;
+            background: #fff;
+            color: #969696;
+            cursor: pointer;
+        }
+
+        .upload-field {
+            position: relative;
+        }
+
+        .upload-field input[type="file"] {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            clip-path: inset(50%);
+        }
+
+        .register-form .form-group.upload-field label {
+            position: static !important;
+            display: flex !important;
+            height: 48px;
+            align-items: center;
+            justify-content: center;
+            padding: 0 45px 0 10px;
+            gap: 9px;
+            border: 1px dashed #e2c36b;
+            border-radius: 11px;
+            background: #fcfaf3;
+            color: #896b20 !important;
+            font-size: 12px !important;
+            font-weight: 600 !important;
+            cursor: pointer;
+            pointer-events: auto;
+        }
+
+        .upload-field img {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 38px;
+            height: 38px;
+            object-fit: contain;
+            pointer-events: none;
+        }
+
+        .upload-field img[hidden] {
+            display: none;
+        }
+
+        .upload-field input[type="file"]:focus-visible + label {
+            outline: 2px solid var(--gold-dark);
+            outline-offset: 2px;
+        }
+
+        .upload-field label svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .register-form .login-button {
+            height: 45px;
+            margin-top: 8px;
+            box-shadow: 0 3px 7px rgba(88, 67, 18, 0.2);
+        }
+
+        .register-slide .register-text {
+            gap: 4px;
+            margin-top: 18px;
+            font-size: 11px;
+        }
+
+        .register-slide .authMsg {
+            min-height: 0;
+            margin: 0;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 0;
+            }
+
+            .login-page {
+                min-height: 100vh;
+            }
+
+            .intro {
+                padding: 35px 25px 0;
+            }
+
+            .brand {
+                margin-bottom: 25px;
+            }
+
+            .intro h1 {
+                font-size: 24px;
+            }
+
+            .circle-top {
+                width: 200px;
+                height: 200px;
+                right: -65px;
+            }
+
+            .circle-left {
+                width: 260px;
+                height: 260px;
+                left: -135px;
+            }
+
+            .login-card {
+                width: calc(100% - 30px);
+                min-height: 500px;
+                margin-top: 75px;
+                padding: 27px 23px 35px;
+                border-radius: 16px;
+            }
+
+            .authWrapper[data-mode="register"] {
+                min-height: 0;
+                margin-top: 35px;
+                padding: 30px 20px 24px;
+            }
+
+            .register-form {
+                gap: 10px;
+            }
+
+            .register-slide .card-heading h2 {
+                font-size: 21px;
+            }
+
+            .card-heading h2 {
+                font-size: 23px;
+            }
+        }
+
+        @media (max-width: 350px) {
+            .intro {
+                padding-right: 20px;
+                padding-left: 20px;
+            }
+
+            .login-card {
+                width: calc(100% - 20px);
+                padding-right: 18px;
+                padding-left: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="login-page" id="loginPage">
+        <div class="circle circle-top"></div>
+        <div class="circle circle-left"></div>
+        <div class="circle circle-bottom"></div>
+
+        <section class="intro">
+            <div class="brand">Invoice</div>
+            <div class="eyebrow">WELCOME BACK</div>
+            <h1>Your business,<br>beautifully billed.</h1>
+            <p>
+                Sign in to access your saved branding,<br>
+                stamp, and company details.
+            </p>
+        </section>
+
+        <section class="login-card authWrapper" data-mode="login">
+            <div class="authSlide" id="loginSlide">
+                <header class="card-heading">
+                    <h2 id="loginTitle">Welcome back</h2>
+                    <p id="loginSubtitle">Log in to continue to your invoices</p>
+                </header>
+
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="loginUsername">USERNAME</label>
+                        <input type="text" id="loginUsername" name="username" placeholder="Enter your username" autocomplete="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">PASSWORD</label>
+                        <input type="password" id="loginPassword" name="password" placeholder="Enter your password" autocomplete="current-password" required>
+                    </div>
+                    <div id="loginMsg" class="authMsg" role="status" aria-live="polite"></div>
+                    <button type="submit" class="login-button">Log In →</button>
+                </form>
+
+                <div class="register-text">
+                    <span>No account yet?</span>
+                    <a href="#register">Register</a>
+                </div>
+            </div>
+
+            <div class="authSlide register-slide" id="registerSlide" aria-hidden="true" inert>
+                <header class="card-heading">
+                    <h2>Create your account</h2>
+                    <p>Verify your email, then wait for your company account to be approved</p>
+                </header>
+
+                <form class="register-form" onsubmit="handleRegister(event)">
+                    <div class="form-group full-width username-group">
+                        <label for="regUsername">Username</label>
+                        <input type="text" id="regUsername" name="username" autocomplete="username" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="regCompanyName">Company Name</label>
+                        <input type="text" id="regCompanyName" name="companyName" placeholder="Company Name" autocomplete="organization" required>
+                    </div>
+                    <div class="form-group password-field">
+                        <label for="regPassword">Password</label>
+                        <input type="password" id="regPassword" name="new-password" placeholder="Password" autocomplete="new-password" required>
+                        <button class="password-toggle" type="button" aria-label="Show password" onclick="togglePassword('regPassword', this)"><svg class="pwIcon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
+                    </div>
+                    <div class="form-group password-field">
+                        <label for="regConfirm">Confirm Password</label>
+                        <input type="password" id="regConfirm" name="confirm-password" placeholder="Confirm Password" autocomplete="new-password" required>
+                        <button class="password-toggle" type="button" aria-label="Show password" onclick="togglePassword('regConfirm', this)"><svg class="pwIcon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/></svg></button>
+                    </div>
+                    <div class="form-group">
+                        <label for="regTRN">Company TRN (15 digits)</label>
+                        <input type="text" id="regTRN" name="trn" placeholder="Company TRN (15 digits)" inputmode="numeric" maxlength="15" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="regPhone">Company Phone</label>
+                        <input type="tel" id="regPhone" name="phone" placeholder="Company Phone" autocomplete="tel" required>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="regAddress">Company Address</label>
+                        <textarea id="regAddress" name="address" placeholder="Company Address" autocomplete="street-address" required></textarea>
+                    </div>
+                    <div class="form-group full-width">
+                        <label for="regEmail">Company Email</label>
+                        <input type="email" id="regEmail" name="email" placeholder="Company Email" autocomplete="email" required>
+                    </div>
+                    <div class="form-group upload-field">
+                        <input type="file" id="regLogo" name="logo" accept="image/*" onchange="previewImage(this, 'logoPreview')" required>
+                        <label for="regLogo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V3m0 0L7 8m5-5 5 5"/><path d="M5 14v5h14v-5"/></svg><span>Upload Logo</span></label>
+                        <img id="logoPreview" alt="Logo preview" hidden>
+                    </div>
+                    <div class="form-group upload-field">
+                        <input type="file" id="regStamp" name="stamp" accept="image/*" onchange="previewImage(this, 'stampPreview')" required>
+                        <label for="regStamp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V3m0 0L7 8m5-5 5 5"/><path d="M5 14v5h14v-5"/></svg><span>Upload Stamp</span></label>
+                        <img id="stampPreview" alt="Stamp preview" hidden>
+                    </div>
+                    <div id="regMsg" class="authMsg" role="status" aria-live="polite"></div>
+                    <button type="submit" class="login-button">Create Account</button>
+                </form>
+
+                <div class="register-text">
+                    <span>Already have an account?</span>
+                    <a href="#login">Log In</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
+    <script src="../js/firebase-config.js"></script>
+    <script src="../js/firebase-init.js"></script>
+    <script src="../js/auth.js?v=20261014-1"></script>
+    <script>
+        initAuthPage();
+
+        (function () {
+            const page = document.getElementById('loginPage');
+            if (!page) return;
+
+            const circles = Array.from(page.querySelectorAll('.circle'));
+            const moveBy = {
+                top: { x: 18, y: -22 },
+                left: { x: -14, y: 18 },
+                bottom: { x: 14, y: 12 }
+            };
+
+            function applyParallax(clientX, clientY) {
+                const rect = page.getBoundingClientRect();
+                const px = (clientX - (rect.left + rect.width / 2)) / rect.width;
+                const py = (clientY - (rect.top + rect.height / 2)) / rect.height;
+
+                circles.forEach((circle) => {
+                    const key = circle.classList.contains('circle-top') ? 'top' :
+                        circle.classList.contains('circle-left') ? 'left' : 'bottom';
+                    const drift = moveBy[key] || { x: 0, y: 0 };
+                    const tx = px * drift.x * 2;
+                    const ty = py * drift.y * 2;
+                    circle.style.transform = `translate(${tx}px, ${ty}px) scale(${1 + Math.abs(px) * 0.04})`;
+                });
+            }
+
+            function resetParallax() {
+                circles.forEach((circle) => {
+                    circle.style.transform = '';
+                });
+                page.classList.remove('is-interacting');
+            }
+
+            ['pointermove', 'touchmove'].forEach((eventName) => {
+                page.addEventListener(eventName, (event) => {
+                    const point = event.touches ? event.touches[0] : event;
+                    if (!point) return;
+                    page.classList.add('is-interacting');
+                    applyParallax(point.clientX, point.clientY);
+                }, { passive: true });
+            });
+
+            ['pointerleave', 'touchend', 'touchcancel'].forEach((eventName) => {
+                page.addEventListener(eventName, resetParallax, { passive: true });
+            });
+        })();
+    </script>
+</body>
+</html>

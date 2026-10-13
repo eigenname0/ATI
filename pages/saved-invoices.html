@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>ATI · Saved Invoices</title>
+	<link rel="icon" type="image/svg+xml" href="../assets/ATI-logo.svg">
+	<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@400;500;600;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="../css/style.css?v=theme1">
+	<style>
+		/* ===== SAVED INVOICES PAGE ===== */
+
+		.savedPage {
+			max-width: 920px;
+			margin: 28px auto;
+			padding: 24px;
+		}
+
+		/* Header */
+
+		.savedHeader {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			gap: 16px;
+			margin-bottom: 20px;
+		}
+
+		.savedHeader h1 {
+			color: #594714;
+			font-family: var(--font-display);
+			font-size: 22px;
+			font-weight: 700;
+			letter-spacing: 0;
+			text-transform: uppercase;
+		}
+
+		.savedHeader a {
+			color: #806719;
+			font-weight: 700;
+		}
+
+		/* Buttons */
+
+		.savedHeader button,
+		.savedActions button {
+			background: #d0a933;
+			color: #fff;
+			border: 0;
+			border-radius: 8px;
+			cursor: pointer;
+			font: 600 13px var(--font-body);
+		}
+
+		/* Export CSV */
+
+		.exportButton {
+			background: transparent;
+			color: var(--ati-button-color);
+			border: 0;
+			border-radius: 0;
+			padding: 3px 0;
+			cursor: pointer;
+			font: 600 12px var(--font-body);
+			text-decoration: underline;
+			text-underline-offset: 3px;
+		}
+
+		.exportButton:hover {
+			filter: brightness(.88);
+		}
+
+		/* Search and Filters */
+
+		.savedFilters {
+			display: grid;
+			grid-template-columns: minmax(0, 1fr) 200px 170px;
+			gap: 10px;
+			margin-bottom: 18px;
+		}
+
+		.savedFilters input,
+		.savedFilters select {
+			width: 100%;
+			padding: 11px 12px;
+			border: 1px solid #ddd;
+			border-radius: 8px;
+			font: inherit;
+		}
+
+		/* Invoice List */
+
+		.savedList {
+			display: grid;
+			gap: 12px;
+		}
+
+		/* Individual Invoice Card */
+
+		.savedCard {
+			background: #fff;
+			border-left: 4px solid #d0a933;
+			border-radius: 10px;
+			padding: 16px;
+			box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+		}
+
+		.savedCardHeading {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 12px;
+			margin-bottom: 6px;
+		}
+
+		.savedCard h2 {
+			min-width: 0;
+			margin-bottom: 0;
+			font-size: 16px;
+			overflow-wrap: anywhere;
+		}
+
+		/* Invoice Information */
+
+		.savedMeta {
+			color: #666;
+			font-size: 13px;
+			margin-bottom: 12px;
+		}
+
+		/* Invoice Action Buttons */
+
+		.savedActions {
+			display: flex;
+			align-items: center;
+			gap: 6px;
+		}
+
+		.savedActions button {
+			width: auto;
+			padding: 6px 11px;
+			border-radius: 6px;
+			font-size: 12px;
+			transition: background 0.15s ease,
+					border-color 0.15s ease;
+		}
+
+		/* Open Invoice */
+
+		.savedActions .openInvoiceButton {
+			background: #d0a933;
+			color: #fff;
+			border: 0;
+		}
+
+		.savedActions .openInvoiceButton:hover {
+			background: #bc982e;
+		}
+
+		/* Delete Invoice */
+
+		.savedActions .deleteInvoiceButton {
+			width: 28px;
+			height: 28px;
+			padding: 0;
+			background: #f5eded;
+			color: #9a4545;
+			border: 1px solid #eadada;
+			border-radius: 50%;
+			font: 700 16px/1 var(--font-body);
+		}
+
+		.savedActions .deleteInvoiceButton:hover {
+			background: #eedfdf;
+			border-color: #dfcaca;
+		}
+
+		/* Keyboard Focus */
+
+		.savedActions button:focus-visible {
+			outline: 2px solid #687078;
+			outline-offset: 2px;
+		}
+
+		/* Empty or Loading State */
+
+		.savedEmpty {
+			background: #fff;
+			padding: 22px;
+			border-radius: 10px;
+			color: #666;
+		}
+
+		/* ===== RESPONSIVE DESIGN ===== */
+
+		@media (max-width: 760px) {
+			.savedFilters {
+				grid-template-columns: minmax(0, 1fr) minmax(150px, 0.6fr);
+			}
+
+			.savedFilters input {
+				grid-column: 1 / -1;
+			}
+		}
+
+		@media (max-width: 600px) {
+			.savedPage {
+				margin: 12px auto;
+				padding: 14px;
+			}
+
+			.savedFilters {
+				grid-template-columns: 1fr;
+			}
+
+			.savedFilters input {
+				grid-column: auto;
+			}
+
+			.savedHeader {
+				align-items: flex-start;
+				flex-direction: column;
+			}
+		}
+
+		.dashboard {
+			width: 100%;
+			max-width: 1500px;
+			margin: 0 auto;
+			padding: 28px 24px 40px;
+		}
+
+		.dashboardHeader {
+			display: flex;
+			align-items: flex-start;
+			justify-content: space-between;
+			gap: 20px;
+			margin-bottom: 28px;
+	}
+
+		body.whitePage .dashboardHeader button.exportButton,
+		body.whitePage .dashboardHeader button.exportButton:hover {
+			box-shadow: none;
+		}
+
+		.dashboard .page-title {
+			margin: 0 0 7px;
+			color: var(--page-heading-color);
+			font-family: var(--font-body);
+			font-size: var(--page-heading-size);
+			font-weight: var(--page-heading-weight);
+			line-height: 1.3;
+		}
+
+		.dashboardDescription {
+			margin: 0;
+			color: var(--page-subheading-color);
+			font-size: var(--page-subheading-size);
+			line-height: 1.6;
+		}
+
+		.summary-grid {
+			display: grid;
+			grid-template-columns: repeat(4, minmax(0, 1fr));
+			gap: 16px;
+			margin-bottom: 24px;
+		}
+
+		.summary-card {
+			min-height: 128px;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: center;
+			border: 1px solid #e7e2d7;
+			border-radius: 12px;
+			background: #fff;
+			text-align: center;
+		}
+
+		.summary-icon {
+			width: 23px;
+			height: 23px;
+			margin-bottom: 7px;
+			color: var(--ati-icon-color);
+		}
+
+		.summary-value {
+			font-size: 20px;
+			font-weight: 700;
+			font-variant-numeric: tabular-nums;
+		}
+
+		.summary-label {
+			margin-top: 5px;
+			color: #77736b;
+			font-size: 11px;
+		}
+
+		.invoice-container {
+			position: relative;
+			padding: 18px;
+			border: 1px solid #e7e2d7;
+			border-radius: 12px;
+			background: #fff;
+		}
+
+		.toolbar {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			gap: 14px;
+			margin-bottom: 16px;
+		}
+
+		.search-box {
+			width: min(300px, 100%);
+			height: 40px;
+			display: flex;
+			align-items: center;
+			gap: 9px;
+			padding: 0 13px;
+			border-radius: 22px;
+			background: #f5f4f0;
+		}
+
+		.search-box svg { flex: none; color: var(--ati-icon-color); }
+		.search-box input { width: 100%; min-width: 0; border: 0; outline: 0; background: transparent; color: #24231f; font: 12px var(--font-body); }
+		.search-box input::placeholder { color: #898579; }
+
+		.toolbar-right { display: flex; align-items: center; gap: 5px; }
+
+		.status-tab {
+			display: flex;
+			align-items: center;
+			gap: 6px;
+			padding: 7px 10px;
+			border: 1px solid transparent;
+			border-radius: 20px;
+			background: transparent;
+			color: #77736b;
+			font-size: 10px;
+			white-space: nowrap;
+			box-shadow: none;
+		}
+
+		.status-tab.active { border-color: #e7e2d7; background: #fff; color: #24231f; }
+		.count { display: inline-grid; min-width: 20px; height: 20px; padding: 0 5px; place-items: center; border-radius: 20px; background: #f4ebce; color: #92711b; font-size: 10px; font-weight: 700; }
+		.count.green { background: #e4f2e9; color: #358052; }
+		.count.yellow { background: #fff1c9; color: #a98019; }
+
+		.filter-button {
+			display: flex;
+			align-items: center;
+			gap: 7px;
+			padding: 8px 11px;
+			border: 1px solid #e7e2d7;
+			border-radius: 20px;
+			background: #fff;
+			color: #514b40;
+			font-size: 11px;
+			box-shadow: none;
+		}
+
+		select.invoiceTypeFilter {
+			width: auto;
+			min-width: 145px;
+			height: 36px;
+			padding: 0 11px;
+			font: 11px var(--font-body);
+			cursor: pointer;
+		}
+
+		.table-wrap { overflow-x: auto; }
+		.invoice-table { width: 100%; min-width: 760px; border-collapse: collapse; }
+		.invoice-table thead { background: #f6f5f1; }
+		.invoice-table th { padding: 12px 10px; color: #77736b; text-align: left; font-size: 9px; font-weight: 700; white-space: nowrap; }
+		.invoice-table th:first-child { border-radius: 7px 0 0 7px; }
+		.invoice-table th:last-child { border-radius: 0 7px 7px 0; }
+		.invoice-table td { padding: 14px 10px; border-bottom: 1px solid #f0eee8; color: #33312c; font-size: 11px; white-space: nowrap; }
+		.invoice-table tbody tr:hover { background: #fcfbf8; }
+		.invoice-table .money { text-align: right; font-variant-numeric: tabular-nums; }
+		.invoice-table .number { font-weight: 700; }
+
+		.invoice-badge { display: inline-block; padding: 5px 9px; border-radius: 20px; font-size: 10px; font-weight: 700; }
+		.invoice-badge.paid { background: #e4f2e9; color: #358052; }
+		.invoice-badge.unpaid { background: #fff1c9; color: #a98019; }
+		.invoice-row-actions { display: flex; gap: 7px; }
+		.invoice-row-actions button { width: auto; margin: 0; padding: 6px 9px; border-radius: 6px; font-size: 10px; white-space: nowrap; }
+		.invoice-row-actions .openInvoiceButton { background: var(--ati-button-color); color: #fff; }
+		.invoice-row-actions .deleteInvoiceButton { width: 27px; height: 27px; padding: 0; border-radius: 50%; background: #f5eded; color: #9a4545; }
+
+		.filter-popover { position: absolute; z-index: 10; top: 68px; right: 18px; width: 290px; padding: 15px; border: 1px solid #e7e2d7; border-radius: 10px; background: #fff; box-shadow: 0 12px 30px rgba(25, 30, 40, .12); }
+		.filter-popover[hidden] { display: none; }
+		.filter-popover label { display: block; margin: 0 0 5px; color: #716b60; font-size: 10px; font-weight: 700; }
+		.filter-popover select,
+		.filter-popover input { width: 100%; height: 38px; margin: 0 0 11px; padding: 0 10px; border: 1px solid #e3ded3; border-radius: 7px; background: #fff; color: #30343a; font: 11px var(--font-body); }
+		.filter-popover .date-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+		.apply-filters { width: 100%; min-height: 36px; border: 0; border-radius: 7px; background: var(--ati-button-color); color: #fff; font-size: 11px; font-weight: 700; }
+		.empty-state { padding: 32px 10px; color: #77736b; text-align: center; }
+		.empty-state[hidden] { display: none; }
+
+		@media (max-width: 1000px) {
+			.summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+			.toolbar { align-items: flex-start; flex-direction: column; }
+			.toolbar-right { width: 100%; flex-wrap: wrap; }
+		}
+
+		@media (max-width: 600px) {
+			.dashboard { padding: 22px 13px 30px; }
+			.dashboard .page-title { font-size: var(--page-heading-size); }
+			.dashboardHeader { gap: 12px; margin-bottom: 22px; }
+			.summary-grid { gap: 10px; }
+			.summary-card { min-height: 112px; }
+			.summary-value { font-size: 18px; }
+			.invoice-container { padding: 12px; }
+			.search-box { width: 100%; }
+			.filter-popover { top: 112px; right: 8px; width: min(290px, calc(100% - 16px)); }
+		}
+
+		.dashboard .summary-icon,
+		.dashboard .search-box svg,
+		.dashboard .filter-button svg {
+			color: var(--ati-icon-color);
+		}
+	</style>
+</head>
+<body class="whitePage">
+	<nav class="appTaskbar" aria-label="Invoice navigation">
+		<a class="taskbarBrand" href="home.html" aria-label="Invoice home">
+			<span>Invoice</span>
+		</a>
+		<div class="taskbarTabs">
+			<a class="taskbarTab" href="home.html">HOME</a>
+			<a class="taskbarTab active" href="saved-invoices.html" aria-current="page">INVOICES</a>
+			<a class="taskbarTab" href="account.html">ACCOUNT</a>
+			<a class="taskbarTab adminOnly" href="admin-approvals.html" style="display:none">APPROVALS</a>
+		</div>
+		<span class="taskbarSpacer"></span>
+		<span class="taskbarUser" hidden>Logged in as <strong id="taskbarUsername"></strong></span>
+	</nav>
+	<main class="dashboard">
+		<header class="dashboardHeader">
+			<div>
+				<h1 class="page-title">Invoices</h1>
+				<p class="dashboardDescription">Track your saved invoices, payment status, and outstanding balances.</p>
+			</div>
+			<button class="exportButton" type="button" onclick="exportSavedInvoices()">EXPORT</button>
+		</header>
+
+		<section class="summary-grid" aria-label="Invoice summary">
+			<article class="summary-card">
+				<svg class="summary-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+				<div class="summary-value" id="summaryInvoiceCount">0</div>
+				<div class="summary-label">Saved invoices</div>
+			</article>
+			<article class="summary-card">
+				<svg class="summary-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 2v20M17 6H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+				<div class="summary-value" id="summaryInvoiceTotal">AED 0.00</div>
+				<div class="summary-label">Total invoiced</div>
+			</article>
+			<article class="summary-card">
+				<svg class="summary-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m5 12 4 4L19 6"/><circle cx="12" cy="12" r="10"/></svg>
+				<div class="summary-value" id="summaryPaidTotal">AED 0.00</div>
+				<div class="summary-label">Collected</div>
+			</article>
+			<article class="summary-card">
+				<svg class="summary-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+				<div class="summary-value" id="summaryOutstanding">AED 0.00</div>
+				<div class="summary-label">Outstanding</div>
+			</article>
+		</section>
+
+		<section class="invoice-container" aria-label="Saved invoice records">
+			<div class="toolbar">
+				<label class="search-box">
+					<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m16 16 4 4"/></svg>
+					<input type="search" id="savedSearch" placeholder="Search invoices or customers" aria-label="Search invoices or customers">
+				</label>
+				<div class="toolbar-right" role="group" aria-label="Filter by payment status">
+					<button class="status-tab active" type="button" data-status="all" aria-pressed="true">All invoices <span class="count" id="countAll">0</span></button>
+					<button class="status-tab" type="button" data-status="paid" aria-pressed="false">Paid <span class="count green" id="countPaid">0</span></button>
+					<button class="status-tab" type="button" data-status="unpaid" aria-pressed="false">Unpaid <span class="count yellow" id="countUnpaid">0</span></button>
+					<select class="filter-button invoiceTypeFilter" id="savedType" aria-label="Filter by invoice type">
+						<option value="all">All invoice types</option>
+						<option value="sales">Sales Tax Invoice</option>
+						<option value="purchase_tax">Purchase Tax Invoice</option>
+						<option value="purchase_non_vat">Purchase Non-Tax Invoice</option>
+						<option value="commercial">Commercial Invoice</option>
+						<option value="consignment">Consignment Invoice</option>
+						<option value="proforma">Pro Forma Invoice</option>
+						<option value="credit">Credit Note</option>
+					</select>
+					<button class="filter-button" id="filterToggle" type="button" aria-expanded="false" aria-controls="filterPopover">
+						<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 5h16l-6 7v6l-4 2v-8L4 5Z"/></svg>More filters
+					</button>
+				</div>
+			</div>
+			<p id="invoiceSyncStatus" class="historyStatus" role="status" aria-live="polite"></p>
+
+			<div class="filter-popover" id="filterPopover" hidden>
+				<label for="customerFilter">Customer</label>
+				<select id="customerFilter"><option value="">All customers</option></select>
+				<div class="date-row">
+					<div><label for="dateFrom">From date</label><input type="date" id="dateFrom"></div>
+					<div><label for="dateTo">To date</label><input type="date" id="dateTo"></div>
+				</div>
+				<button class="apply-filters" id="applyFilters" type="button">Apply filters</button>
+			</div>
+
+			<div class="table-wrap">
+				<table class="invoice-table">
+					<thead><tr><th>Status</th><th>Date</th><th>Number</th><th>Customer</th><th class="money">Total</th><th class="money">Balance</th><th>Actions</th></tr></thead>
+					<tbody id="savedInvoiceRows"></tbody>
+				</table>
+				<p class="empty-state" id="savedEmptyState" aria-live="polite">Loading saved invoices...</p>
+			</div>
+		</section>
+	</main>
+	<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
+	<script src="../js/firebase-config.js"></script>
+	<script src="../js/firebase-init.js"></script>
+	<script src="../js/auth.js?v=20261013-2"></script>
+	<script src="../js/styled-dropdowns.js?v=3"></script>
+	<script src="../js/saved-invoices.js?v=20261013-3"></script>
+	<script>initStyledDropdowns(document.querySelector(".savedFilters")); requireAuth(function(profile, user) { document.getElementById("taskbarUsername").textContent = profile.username; loadSavedInvoices(profile, user); });</script>
+</body>
+</html>

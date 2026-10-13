@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>ATI · Account</title>
+	<link rel="icon" type="image/svg+xml" href="../assets/ATI-logo.svg" sizes="128x128">
+	<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@400;500;600;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="../css/style.css?v=account18">
+	<style>
+		body.whitePage {
+			background: #f5f3ec;
+		}
+		.accountPage {
+			width: min(1100px, calc(100% - 48px));
+			margin: 0 auto;
+			padding: 31px 24px 50px;
+			display: grid;
+			grid-template-columns: minmax(0, 1fr);
+			grid-template-areas: "heading" "profile" "password" "appearance";
+			align-items: start;
+			gap: 16px;
+			background: transparent;
+		}
+		.accountPageHeading { grid-area: heading; margin-bottom: 8px; }
+		.accountBreadcrumb { margin-bottom: 9px; color: #80631b; font-size: 11px; font-weight: 800; letter-spacing: 2px; }
+		.accountPageHeading h1 { margin: 0 0 7px; color: var(--page-heading-color); font: var(--page-heading-weight) var(--page-heading-size)/1.3 var(--font-body); }
+		.accountPageHeading p:last-child { margin: 0; color: var(--page-subheading-color); font-size: var(--page-subheading-size); line-height: 1.6; }
+		.accountCard {
+			min-width: 0;
+			background: rgba(255, 255, 255, .92);
+			border: 1px solid #eee8dc;
+			border-radius: 17px;
+			padding: 24px 26px 25px;
+			box-shadow: 0 4px 20px rgba(42, 38, 25, .035);
+		}
+		.profileCard { grid-area: profile; }
+		.passwordCard { grid-area: password; }
+		.appearanceCard { grid-area: appearance; }
+		.accountCard h1, .accountCard h2 {
+			color: #24231e;
+			font-family: "Playfair Display", Georgia, serif;
+			font-size: 23px;
+			font-weight: 600;
+			line-height: 1.3;
+			margin: 0;
+		}
+		.accountCard p {
+			color: #756f63;
+			font-size: 13px;
+			line-height: 1.5;
+			margin: 6px 0 14px;
+		}
+		.accountHeading {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+		}
+		.accountHeadingIcon {
+			display: grid;
+			place-items: center;
+			width: 22px;
+			height: 22px;
+			flex: none;
+			color: var(--ati-icon-color);
+		}
+		.accountHeadingIcon svg { width: 18px; height: 18px; stroke-width: 1.8; }
+		.accountTop {
+			display: flex;
+			align-items: center;
+			justify-content: flex-end;
+			gap: 12px;
+			margin-bottom: 8px;
+		}
+		.accountForm {
+			display: grid;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 18px 22px;
+		}
+		.accountForm label {
+			display: block;
+			font-size: 11px;
+			color: #696960;
+			font-weight: 800;
+			letter-spacing: 1.2px;
+			text-transform: uppercase;
+			margin-bottom: 9px;
+		}
+		.accountForm input {
+			width: 100%;
+			min-width: 0;
+			height: 47px;
+			padding: 0 15px;
+			border: 1px solid #dcdcd8;
+			border-radius: 10px;
+			background: #fff;
+			font: 13px var(--font-body);
+			color: #24231e;
+		}
+		.accountForm input:focus {
+			outline: none;
+			border-color: #d0ad38;
+			box-shadow: 0 0 0 3px rgba(208,173,56,.12);
+		}
+		.accountField { min-width:0; }
+		.accountForm .wide { grid-column: 1 / -1; }
+		.accountProfileRow {
+			display: flex;
+			align-items: center;
+			gap: 18px;
+			padding: 0 0 20px;
+			margin-bottom: 2px;
+			border-bottom: 1px solid #eee8dc;
+		}
+		.accountProfileRow.wide { grid-column: 1 / -1; }
+		.accountAvatar {
+			position: relative;
+			width: 88px;
+			height: 88px;
+			flex: none;
+			display: grid;
+			place-items: center;
+			overflow: visible;
+			border-radius: 50%;
+			background: #f5f0e3;
+			color: #a88832;
+			font-size: 25px;
+			font-weight: 700;
+		}
+		.accountAvatarFallback { display: block; }
+		.accountAvatar img {
+			position: absolute;
+			inset: 0;
+			width: 100%;
+			height: 100%;
+			border-radius: 50%;
+			background: #f5f0e3;
+			object-fit: contain;
+		}
+		.accountAvatarEdit {
+			position: absolute;
+			right: -2px;
+			bottom: -2px;
+			z-index: 1;
+			width: 30px;
+			height: 30px;
+			display: grid;
+			place-items: center;
+			padding: 0;
+			border: 2px solid #fff;
+			border-radius: 50%;
+			background: var(--ati-button-color);
+			color: #fff;
+			box-shadow: none;
+			cursor: pointer;
+		}
+		.accountAvatarEdit:hover { background: var(--ati-button-color); filter: brightness(.92); box-shadow: none; transform: none; }
+		.accountAvatarEdit svg { width: 14px; height: 14px; stroke-width: 2; }
+		.accountIdentity { min-width: 0; }
+		.accountIdentity h2 { margin: 0 0 5px; color: #24231e; font: 600 21px/1.3 "Playfair Display", Georgia, serif; overflow-wrap: anywhere; }
+		.accountIdentity p { margin: 0; color: #77766f; font-size: 12px; overflow-wrap: anywhere; }
+		.accountLogoInput { position: absolute; width: 1px !important; height: 1px !important; overflow: hidden; clip: rect(0, 0, 0, 0); clip-path: inset(50%); white-space: nowrap; }
+		.accountLogoPreview {
+			display: none;
+			object-fit: contain;
+		}
+		.accountButton {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			gap: 8px;
+			background: var(--ati-button-color);
+			color: #fff;
+			border: 0;
+			border-radius: 8px;
+			padding: 9px 14px;
+			cursor: pointer;
+			font: 600 12px var(--font-body);
+			text-decoration: none;
+			box-shadow: 0 3px 9px rgba(117,91,19,.2);
+			transition: background .16s ease, box-shadow .16s ease, transform .16s ease;
+		}
+		.accountButton:hover {
+			background: var(--ati-button-color);
+			filter: brightness(.92);
+			box-shadow: 0 5px 12px rgba(117,91,19,.25);
+			transform: translateY(-1px);
+		}
+		.accountButton svg { width:15px; height:15px; stroke-width:2; }
+		.accountButton.danger {
+			background: transparent;
+			color: #24231e;
+			box-shadow: none;
+			padding: 6px 0;
+		}
+		.accountButton.danger:hover {
+			background: transparent;
+			color: #000;
+			box-shadow: none;
+			transform: none;
+		}
+		button.accountButton.danger,
+		button.accountButton.danger:hover,
+		button.accountButton.accountRemoveButton,
+		button.accountButton.accountRemoveButton:hover { box-shadow: none; }
+		.accountActions {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 8px;
+			margin-top: 4px;
+		}
+		.accountMessage {
+			min-height: 16px;
+			margin-top: 8px;
+			font-size: 12px;
+			color: #267442;
+		}
+		.accountMessage.error { color: #a22; }
+		.themeEnableRow { display: flex; align-items: center; gap: 10px; margin: 0 0 16px; color: #4c4942; font-size: 13px; }
+		.themeEnableRow input { width: 17px; height: 17px; margin: 0; accent-color: var(--ati-button-color); }
+		.themeColorGrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+		.themeColorField { min-width: 0; }
+		.themeColorField label { display: block; margin: 0 0 7px; color: #696960; font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
+		.themeColorField input[type="color"] { display: block; width: 100%; height: 42px; padding: 4px; border: 1px solid #dcdcd8; border-radius: 8px; background: #fff; cursor: pointer; }
+		.themeColorField input[type="color"]:disabled { cursor: not-allowed; opacity: .48; }
+		.themeSaveButton { margin-top: 16px; }
+		@media(max-width:520px) { .themeColorGrid { grid-template-columns: 1fr; gap: 12px; } }
+		@media(max-width:760px) {
+			.accountPage {
+				max-width: 600px;
+				grid-template-columns: 1fr;
+				grid-template-areas: "heading" "profile" "password" "appearance";
+				padding: 24px 20px 35px;
+				gap: 14px;
+			}
+		}
+		@media(max-width:520px) {
+			.accountPage { width: calc(100% - 24px); padding: 22px 0 30px; }
+			.accountPageHeading h1 { font-size: var(--page-heading-size); }
+			.accountCard { padding: 20px 16px; border-radius: 14px; }
+			.accountForm { grid-template-columns: 1fr; }
+			.accountForm .wide { grid-column:auto; }
+			.accountProfileRow { gap: 14px; }
+			.accountAvatar { width: 76px; height: 76px; font-size: 22px; }
+			.accountTop { align-items:flex-start; }
+		}
+	</style>
+</head>
+<body class="whitePage">
+	<nav class="appTaskbar" aria-label="Invoice navigation">
+		<a class="taskbarBrand" href="home.html" aria-label="Invoice home">
+			<span>Invoice</span>
+		</a>
+		<div class="taskbarTabs">
+			<a class="taskbarTab" href="home.html">HOME</a>
+			<a class="taskbarTab" href="saved-invoices.html">INVOICES</a>
+			<a class="taskbarTab active" href="account.html" aria-current="page">ACCOUNT</a>
+			<a class="taskbarTab adminOnly" href="admin-approvals.html" style="display:none">APPROVALS</a>
+		</div>
+		<span class="taskbarSpacer"></span>
+		<span class="taskbarUser" hidden>Logged in as <strong id="taskbarUsername"></strong></span>
+	</nav>
+	<main class="accountPage">
+		<header class="accountPageHeading">
+			<p class="accountBreadcrumb">ACCOUNT / PROFILE</p>
+			<h1>My Profile</h1>
+			<p>Manage your company information and account security.</p>
+		</header>
+		<section class="accountCard profileCard">
+			<div class="accountTop"><button class="accountButton danger" type="button" onclick="logout()"><i data-lucide="log-out" aria-hidden="true"></i>Log Out</button></div>
+			<form id="profileForm" class="accountForm" onsubmit="saveAccountProfile(event)">
+				<div class="accountProfileRow wide">
+					<div class="accountAvatar" id="accountAvatar">
+						<span class="accountAvatarFallback" id="accountAvatarFallback">ATI</span>
+						<img id="accountLogoPreview" class="accountLogoPreview" alt="Company logo">
+						<button class="accountAvatarEdit" type="button" aria-label="Change company logo" title="Change company logo" onclick="document.getElementById('accountLogo').click()"><i data-lucide="pencil" aria-hidden="true"></i></button>
+					</div>
+					<div class="accountIdentity"><h2 id="accountCompanyName"></h2><p id="accountIdentityDetails"></p></div>
+					<input id="accountLogo" class="accountLogoInput" type="file" accept="image/*" onchange="previewAccountLogo(this)">
+				</div>
+				<div class="accountField"><label for="accountUsername">Username</label><input id="accountUsername" required minlength="2" autocomplete="username"></div>
+				<div class="accountField"><label for="accountPhone">Phone</label><input id="accountPhone" type="tel" autocomplete="tel"></div>
+				<div class="accountField wide"><label for="accountAddress">Address</label><input id="accountAddress" autocomplete="street-address"></div>
+				<div class="accountActions wide"><button class="accountButton" type="submit"><i data-lucide="save" aria-hidden="true"></i>Save information</button></div>
+			</form>
+			<div id="profileMessage" class="accountMessage" role="status"></div>
+		</section>
+		<section class="accountCard passwordCard">
+			<div class="accountHeading"><span class="accountHeadingIcon"><i data-lucide="lock-keyhole" aria-hidden="true"></i></span><h2>Change password</h2></div>
+			<p>For security, enter your current password before choosing a new one.</p>
+			<form id="passwordForm" class="accountForm" onsubmit="changeAccountPassword(event)">
+				<div class="accountField wide"><label for="currentPassword">Current password</label><input id="currentPassword" type="password" required autocomplete="current-password"></div>
+				<div class="accountField"><label for="newPassword">New password</label><input id="newPassword" type="password" required minlength="6" autocomplete="new-password"></div>
+				<div class="accountField"><label for="confirmNewPassword">Confirm new password</label><input id="confirmNewPassword" type="password" required minlength="6" autocomplete="new-password"></div>
+				<div class="accountActions wide"><button id="passwordSaveButton" class="accountButton" type="submit"><i data-lucide="key-round" aria-hidden="true"></i>Change password</button></div>
+			</form>
+			<div id="passwordMessage" class="accountMessage" role="status"></div>
+		</section>
+		<section class="accountCard appearanceCard" id="appearanceCard" hidden>
+			<div class="accountHeading"><span class="accountHeadingIcon"><i data-lucide="palette" aria-hidden="true"></i></span><h2>Appearance</h2></div>
+			<p>Customize the colors used across the workspace.</p>
+			<form id="themeForm" onsubmit="saveAccountTheme(event)">
+				<label class="themeEnableRow" for="themeColorsEnabled"><input id="themeColorsEnabled" type="checkbox">Enable custom colors</label>
+				<div class="themeColorGrid">
+					<div class="themeColorField"><label for="themeIconColor">Icons</label><input id="themeIconColor" type="color" value="#d0a933" disabled></div>
+					<div class="themeColorField"><label for="themeButtonColor">Buttons</label><input id="themeButtonColor" type="color" value="#d0a933" disabled></div>
+					<div class="themeColorField"><label for="themeLineColor">Page line</label><input id="themeLineColor" type="color" value="#d0a933" disabled></div>
+				</div>
+				<div class="accountActions"><button class="accountButton themeSaveButton" type="submit"><i data-lucide="save" aria-hidden="true"></i>Save colors</button></div>
+				<div id="themeMessage" class="accountMessage" role="status" aria-live="polite"></div>
+			</form>
+		</section>
+	</main>
+	<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
+	<script src="../js/firebase-config.js"></script>
+	<script src="../js/firebase-init.js"></script>
+	<script src="../js/auth.js?v=20261013-1"></script>
+	<script src="../js/account.js?v=account3"></script>
+	<script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+	<script>if (window.lucide) lucide.createIcons(); requireAuth(function(profile,user) { document.getElementById("taskbarUsername").textContent=profile.username||user.email; initAccountPage(profile,user); });</script>
+</body>
+</html>

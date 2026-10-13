@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>ATI Company Approvals</title>
+	<link rel="icon" type="image/svg+xml" href="../assets/ATI-logo.svg">
+	<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@400;500;600;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="../css/style.css?v=approvals6">
+	<style>
+		.approvalMain { max-width: 900px; margin: 32px auto; padding: 0 20px; }
+		.approvalCard { padding: 22px; margin: 14px 0; border: 1px solid #e8e3d7; border-radius: 12px; background: #fff; box-shadow: 0 4px 14px rgba(30,25,16,.06); }
+		.approvalCard h2 { margin: 0 0 6px; color: #594714; font-size: 18px; }
+		.approvalEmail, .approvalDate { margin: 4px 0; color: #68645c; font-size: 13px; overflow-wrap: anywhere; }
+		.approvalActions { display: flex; gap: 9px; margin-top: 16px; }
+		.approvalActions button { border: 0; border-radius: 7px; padding: 9px 14px; background: var(--ati-button-color); color: #fff; font: 600 13px var(--font-body); cursor: pointer; }
+		.approvalActions .reject { background: #f2f0eb; color: #59554c; }
+		.approvalActions button:disabled { opacity: .55; cursor: wait; }
+		.approvalNotice { padding: 15px; border-radius: 8px; background: #f6f3eb; color: #5a5140; }
+		.approvalNotice.error { background: #fff0ed; color: #9a3528; }
+	</style>
+</head>
+<body>
+	<nav class="appTaskbar" aria-label="ATI navigation">
+		<a class="taskbarBrand" href="home.html" aria-label="ATI home">
+			<span>ATI</span>
+		</a>
+		<div class="taskbarTabs">
+			<a class="taskbarTab" href="home.html">HOME</a>
+			<a class="taskbarTab" href="saved-invoices.html">INVOICES</a>
+			<a class="taskbarTab" href="account.html">ACCOUNT</a>
+			<a class="taskbarTab active" href="admin-approvals.html" aria-current="page">APPROVALS</a>
+		</div>
+		<span class="taskbarSpacer"></span>
+		<button class="taskbarLogout" onclick="logout()">Log Out</button>
+	</nav>
+	<main class="approvalMain">
+		<h1>Company Applications</h1>
+		<p>Review company names and contact emails. Invoice records are not shown on this page.</p>
+		<div id="approvalNotice" class="approvalNotice" role="status">Checking administrator access…</div>
+		<section id="applicationList" aria-live="polite"></section>
+	</main>
+	<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-functions-compat.js"></script>
+	<script src="../js/firebase-config.js"></script>
+	<script src="../js/firebase-init.js"></script>
+	<script src="../js/auth.js?v=20261013-1"></script>
+	<script src="../js/admin-approvals.js?v=2"></script>
+</body>
+</html>

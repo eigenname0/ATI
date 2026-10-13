@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>ATI</title>
+<link rel="icon" type="image/svg+xml" href="../assets/ATI-logo.svg">
+
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/style.css?v=theme1">
+
+</head>
+
+<body class="whitePage">
+
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore-compat.js"></script>
+<script src="../js/firebase-config.js"></script>
+<script src="../js/firebase-init.js"></script>
+
+<script src="../js/auth.js?v=20261013-2"></script>
+<script src="../js/styled-dropdowns.js?v=4"></script>
+<script src="../js/script.js?v=20261013-4"></script>
+<script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+
+<nav class="appTaskbar" aria-label="Invoice navigation">
+	<a class="taskbarBrand" href="home.html" aria-label="Invoice home">
+		<span>Invoice</span>
+	</a>
+	<div class="taskbarTabs">
+		<a class="taskbarTab active" href="home.html" aria-current="page">HOME</a>
+		<a class="taskbarTab" href="saved-invoices.html">INVOICES</a>
+		<a class="taskbarTab" href="account.html">ACCOUNT</a>
+		<a class="taskbarTab adminOnly" href="admin-approvals.html" style="display:none">APPROVALS</a>
+	</div>
+	<span class="taskbarSpacer"></span>
+	<span class="taskbarUser" hidden>Logged in as <strong id="taskbarUsername"></strong></span>
+</nav>
+
+<div class="container">
+	<header class="editorPageHeading">
+		<p class="editorBreadcrumb">HOME</p>
+		<h1>Invoice Editor</h1>
+		<p>Create a polished invoice for your business.</p>
+	</header>
+
+	<div class="editor">
+
+		<div class="editorHeader">
+			<h3>INVOICE DETAILS</h3>
+			<span class="editorDraftStatus">DRAFT</span>
+			<div class="invoiceShareActions">
+				<button class="invoiceActionButton invoiceShareButton" type="button" aria-label="Email invoice" title="Email invoice" onclick="emailInvoiceToCustomer()"><i data-lucide="mail" aria-hidden="true"></i></button>
+				<button class="invoiceActionButton invoiceShareButton" type="button" aria-label="Send invoice on WhatsApp" title="Send invoice on WhatsApp" onclick="whatsappInvoiceToCustomer()"><i data-lucide="message-circle" aria-hidden="true"></i></button>
+			</div>
+		</div>
+
+		<label for="invoiceType">Invoice Type</label>
+		<select id="invoiceType" onchange="setInvoiceType(this.value)">
+			<option value="sales">Sales Tax Invoice</option>
+			<option value="purchase_tax">Purchase Tax Invoice</option>
+			<option value="purchase_non_vat">Purchase Non-Tax Invoice</option>
+			<option value="commercial">Commercial Invoice</option>
+			<option value="consignment">Consignment Invoice</option>
+			<option value="proforma">Pro Forma Invoice</option>
+			<option value="credit">Credit Note</option>
+		</select>
+		<label for="vatRate">VAT Rate (%)</label>
+		<input type="number" id="vatRate" min="0" max="100" step="0.01" value="5" oninput="updateInvoice()">
+
+		<label for="invNo">Invoice No</label>
+		<input type="text" id="invNo" oninput="editInvoiceNumber()" autocomplete="off">
+
+		<label>Date</label>
+		<input type="date" id="invDate" oninput="updateInvoice()">
+
+		<hr>
+
+		<h4 id="partyHeading">Customer</h4>
+
+		<div id="savedContactPicker" class="savedContactPicker">
+			<input type="text" id="custName" placeholder="Customer Name *" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="savedCustomerOptions" oninput="filterSavedContactOptions(); updateInvoice()" onchange="fillSavedContactDetails(); updateInvoice()" onkeydown="handleSavedContactKeydown(event)">
+			<button class="savedContactToggle" type="button" aria-label="Show saved customers" aria-expanded="false" onclick="toggleSavedContactOptions()"><span class="styledDropdownChevron" aria-hidden="true"></span></button>
+			<div id="savedCustomerOptions" class="styledDropdownMenu" role="listbox" aria-label="Saved customers"></div>
+		</div>
+		<input type="text" id="custAddress" placeholder="Address" oninput="updateInvoice()">
+		<input type="tel" id="custPhone" placeholder="Phone" inputmode="tel" oninput="sanitizePhone(this); updateInvoice()">
+		<input type="text" id="custTRN" placeholder="TRN" oninput="updateInvoice()">
+		<input type="email" id="custEmail" placeholder="Email" autocomplete="email" oninput="updateInvoice()">
+
+		<hr>
+
+		<h4>Items</h4>
+
+		<div id="itemList">
+
+			<div class="itemRow">
+				<div class="itemFieldPicker" aria-label="Saved item brand models">
+					<input type="text" class="itemBrand" placeholder="Brand / Model Name" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="itemSavedOptions" oninput="filterSavedItemOptions(this, savedItemBrandModels); updateInvoice()" onkeydown="handleSavedItemFieldKeydown(event, this)">
+					<button class="savedItemToggle" type="button" aria-label="Show saved item brand models" aria-expanded="false" onclick="toggleSavedItemFieldOptions(this.previousElementSibling)"><span class="styledDropdownChevron" aria-hidden="true"></span></button>
+					<div class="savedItemOptions styledDropdownMenu" role="listbox" aria-label="Saved item brand models"></div>
+				</div>
+				<div class="itemMetaRow">
+					<div class="itemFieldPicker" aria-label="Saved item references">
+						<input type="text" class="itemRef" placeholder="Reference Number (Ref.)" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="itemRefSavedOptions" oninput="filterSavedItemOptions(this, savedItemReferenceNumbers); updateInvoice()" onkeydown="handleSavedItemFieldKeydown(event, this)">
+						<button class="savedItemToggle" type="button" aria-label="Show saved item references" aria-expanded="false" onclick="toggleSavedItemFieldOptions(this.previousElementSibling)"><span class="styledDropdownChevron" aria-hidden="true"></span></button>
+						<div class="savedItemOptions styledDropdownMenu" role="listbox" aria-label="Saved item references"></div>
+					</div>
+					<div class="itemFieldPicker" aria-label="Saved item serial numbers">
+						<input type="text" class="itemSerial" placeholder="Serial Number (S/N)" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="itemSerialSavedOptions" oninput="filterSavedItemOptions(this, savedItemSerialNumbers); updateInvoice()" onblur="lookupSavedItemBySerial(this)" onkeydown="handleSavedItemFieldKeydown(event, this)">
+						<button class="savedItemToggle" type="button" aria-label="Show saved item serial numbers" aria-expanded="false" onclick="toggleSavedItemFieldOptions(this.previousElementSibling)"><span class="styledDropdownChevron" aria-hidden="true"></span></button>
+						<div class="savedItemOptions styledDropdownMenu" role="listbox" aria-label="Saved item serial numbers"></div>
+					</div>
+				</div>
+				<div class="itemValueRow">
+					<input type="number" class="qty" value="1" oninput="updateInvoice()">
+					<input type="number" class="price" placeholder="Unit Price Incl VAT" oninput="updateInvoice()">
+				</div>
+				<button type="button" aria-label="Remove item" title="Remove item" onclick="removeItem(this)">−</button>
+			</div>
+
+		</div>
+
+		<button class="editorCompactAction" onclick="addItem()">+ Add Item</button>
+
+		<h4>Payment</h4>
+
+		<div id="paymentList">
+
+			<div class="paymentRow">
+
+				<select class="payMode" onchange="updateInvoice()">
+					<option>CASH</option>
+					<option>CARD</option>
+					<option>BANK TRANSFER</option>
+					<option>CHEQUE</option>
+				</select>
+
+				<input type="text" class="payRef" placeholder="Reference" oninput="updateInvoice()">
+
+				<input type="number" class="payAmount" placeholder="Amount" oninput="updateInvoice()">
+
+				<button type="button" aria-label="Remove payment method" title="Remove payment method" onclick="removePayment(this)">−</button>
+
+			</div>
+
+		</div>
+
+		<button class="editorCompactAction" onclick="addPayment()">+ Another Payment Method</button>
+
+		<br><br>
+
+		<button class="invoiceActionButton" id="printInvoiceButton" type="button" onclick="printInvoice()"><i data-lucide="printer" aria-hidden="true"></i><span>Save &amp; Print Invoice</span></button>
+		<button class="invoiceActionButton" id="updateInvoiceButton" type="button" onclick="updateCurrentInvoice()" hidden><i data-lucide="save" aria-hidden="true"></i><span>Update Invoice</span></button>
+		<span id="saveStatus" class="historyStatus" role="status" aria-live="polite"></span>
+
+	</div>
+
+	<div class="preview" id="invoicePreview">
+
+		<div class="logoLeft">
+			<img id="logoImg" alt="Company Logo" style="display:none;">
+			<div class="logoFallback" id="logoFallback" style="display:none;font-size:22px;font-weight:700;color:var(--ati-icon-color);">ATI</div>
+		</div>
+
+		<table style="border:none;margin-bottom:20px">
+			<tr>
+				<td style="border:none;text-align:left">
+					<span id="companyAddress" style="white-space:pre-line;"></span><br>
+					Phone: <span id="companyPhone"></span><br>
+					Email: <span id="companyEmail"></span>
+				</td>
+				<td style="border:none;text-align:right">
+					<div class="taxTitle" id="taxTitleAr">فاتورة ضريبية</div>
+					<div class="taxTitle" id="taxTitleEn">TAX INVOICE</div>
+					<div>TRN: <span id="companyTRN"></span></div>
+				</td>
+			</tr>
+		</table>
+
+		<table style="border:none;margin-bottom:15px">
+			<tr>
+				<td style="border:none;text-align:left">
+					Invoice No : <span id="pInvNo"></span><br>
+					Invoice Date : <span id="pDate"></span>
+				</td>
+			</tr>
+		</table>
+
+		<table style="border:none;margin-bottom:20px">
+			<tr>
+				<td style="border:none;text-align:left;width:65%">
+					<strong id="billLabelEn">BILL TO</strong><br><br>
+					Name : <span id="pName"></span><br>
+					Address : <span id="pAddress"></span><br>
+					Phone : <span id="pPhone"></span><br>
+					Email : <span id="pEmail"></span><br>
+					TRN : <span id="pTRN"></span>
+				</td>
+			</tr>
+		</table>
+
+		<table style="border-bottom:2px solid black">
+			<thead>
+				<tr style="border-bottom:2px solid black">
+					<th>#<br>الرقم</th>
+					<th>Description<br>الوصف</th>
+					<th>Qty<br>الكمية</th>
+					<th>Unit Price Incl VAT<br>سعر الوحدة شامل الضريبة</th>
+					<th>Unit Price Excl VAT<br>سعر الوحدة بدون الضريبة</th>
+					<th>Total Excl VAT<br>الإجمالي بدون الضريبة</th>
+					<th>VAT %<br>نسبة الضريبة</th>
+					<th>VAT Amount<br>قيمة الضريبة</th>
+					<th>Total Incl VAT<br>الإجمالي شامل الضريبة</th>
+				</tr>
+			</thead>
+			<tbody id="invoiceItems"></tbody>
+		</table>
+
+		<table style="margin-top:20px">
+			<tr>
+				<td style="border:none;text-align:left">
+					<strong>Amount in Words :</strong><br>
+					<span id="pWords"></span><br>
+					<strong dir="rtl">المبلغ بالكلمات :</strong><br>
+					<span id="pWordsAr" dir="rtl"></span>
+				</td>
+				<td style="border:none;text-align:right">
+					<strong>Total Amount Incl. VAT</strong><br>
+					<strong>إجمالي المبلغ شامل الضريبة</strong><br>
+					<strong>AED <span id="grandTotal"></span></strong>
+				</td>
+			</tr>
+		</table>
+
+		<table style="margin-top:6px">
+			<tr>
+				<td style="border:none;text-align:right">
+					<strong>Balance Due</strong><br>
+					<strong>الرصيد المستحق</strong><br>
+					<strong>AED <span id="balanceDue"></span></strong>
+				</td>
+			</tr>
+		</table>
+
+		<table style="margin-top:20px">
+			<tr>
+				<th>Mode<br>طريقة الدفع</th>
+				<th>Reference<br>المرجع</th>
+				<th>Currency<br>العملة</th>
+				<th>Taxable<br>القيمة الخاضعة</th>
+				<th>VAT<br>الضريبة</th>
+				<th>Total<br>الإجمالي</th>
+			</tr>
+			<tbody id="paymentRows"></tbody>
+		</table>
+
+		<div style="text-align:right;margin-top:30px;">
+			<img id="stampImg" class="stamp" alt="Company Stamp" style="display:none;">
+		</div>
+
+		<div style="text-align:center;margin-top:20px;font-size:13px;font-weight:600;">
+			THIS IS A COMPUTER GENERATED INVOICE AND NO SIGNATURE IS REQUIRED
+		</div>
+
+		<div style="text-align:center;font-size:13px;">
+			هذه فاتورة صادرة آلياً ولا تتطلب توقيع
+		</div>
+
+	</div>
+
+</div>
+
+<script>
+requireAuth(function (profile) {
+	document.getElementById("taskbarUsername").textContent = profile.username;
+
+	const branding = currentUserBranding();
+
+	if (branding && branding.logo) {
+		const logoImg = document.getElementById("logoImg");
+		logoImg.src = branding.logo;
+		logoImg.style.display = "block";
+	} else {
+		document.getElementById("logoFallback").style.display = "block";
+	}
+
+	if (branding && branding.stamp) {
+		const stampImg = document.getElementById("stampImg");
+		stampImg.src = branding.stamp;
+		stampImg.style.display = "block";
+	}
+
+	document.getElementById("companyTRN").textContent = (branding && branding.trn) ? branding.trn : "-";
+	document.getElementById("companyAddress").textContent = (branding && branding.address) ? branding.address : "";
+	document.getElementById("companyPhone").textContent = (branding && branding.phone) ? branding.phone : "";
+	document.getElementById("companyEmail").textContent = (branding && branding.email) ? branding.email : "";
+
+	if (window.lucide) lucide.createIcons();
+	initInvoiceForm(profile);
+});
+</script>
+
+</body>
+</html>

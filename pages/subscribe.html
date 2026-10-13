@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>ATI Subscription</title>
+	<link rel="icon" type="image/svg+xml" href="../assets/ATI-logo.svg">
+	<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@400;500;600;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="../css/style.css?v=theme1">
+	<style>
+		.billingCard { max-width: 520px; margin: 8vh auto; padding: 30px; background: #fff; border-top: 5px solid #d0a933; border-radius: 16px; box-shadow: 0 8px 20px rgba(0,0,0,.08); }
+		.billingCard h1 { color: #806719; margin-bottom: 8px; }
+		.billingCard p { line-height: 1.6; color: #555; }
+		.billingStatus { margin: 20px 0; padding: 14px; border-radius: 8px; background: #fff7df; color: #624d11; }
+		.billingBack { display:inline-block; margin-top:8px; padding:8px 12px; border-radius:7px; background:#f0efe9; color:#514b40; font:600 13px var(--font-body); text-decoration:none; }
+		.billingBack:hover { background:#e7e4d9; }
+	</style>
+</head>
+<body>
+	
+	<nav class="appTaskbar" aria-label="ATI navigation">
+		<a class="taskbarBrand" href="home.html" aria-label="ATI home">
+			<span>ATI</span>
+		</a>
+		<div class="taskbarTabs">
+			<a class="taskbarTab" href="home.html">HOME</a>
+			<a class="taskbarTab" href="saved-invoices.html">INVOICES</a>
+			<a class="taskbarTab active" href="account.html" aria-current="page">ACCOUNT</a>
+			<a class="taskbarTab adminOnly" href="admin-approvals.html" style="display:none">APPROVALS</a>
+		</div>
+		<span class="taskbarSpacer"></span>
+		<span class="taskbarUser">Logged in as <strong id="taskbarUsername"></strong></span>
+	</nav>
+	<main class="billingCard">
+		<h1>ATI Subscription</h1>
+		<p>Manage your ATI invoice subscription and payment method.</p>
+		<div id="billingStatus" class="billingStatus" role="status">Payment checkout is not connected yet.</div>
+		<p>To accept payments, configure a payment provider and a server endpoint that verifies subscription status before enabling paid access. See <strong>PAYMENTS.md</strong> in the ATI project folder.</p>
+		<a class="billingBack" href="account.html">Back to Account</a>
+	</main>
+	<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-app-compat.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/10.13.2/firebase-auth-compat.js"></script>
+	<script src="../js/firebase-config.js"></script>
+	<script src="../js/firebase-init.js"></script>
+	<script src="../js/auth.js?v=20261013-1"></script>
+	<script>
+		auth.onAuthStateChanged(async user => {
+			if (!user) {
+				window.location.href = "auth.html";
+				return;
+			}
+			try {
+				const profile = await db.collection("users").doc(user.uid).get();
+				const accountProfile = profile.exists ? profile.data() : {};
+				applyAccountTheme(accountProfile.themeColors);
+				document.getElementById("taskbarUsername").textContent = accountProfile.username || user.email || "";
+			} catch (error) {
+				console.error("Could not load subscription page profile:", error);
+				document.getElementById("taskbarUsername").textContent = user.email || "";
+			}
+		});
+	</script>
+</body>
+</html>
