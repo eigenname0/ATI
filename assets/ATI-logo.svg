@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="300" viewBox="0 0 320 300" fill="none">
+  <title>ATI invoicing logo</title>
+  <desc>Two overlapping invoice sheets in dark olive and muted gold above the ATI serif wordmark.</desc>
+  <g stroke-linecap="round" stroke-linejoin="round">
+    <!-- Rear document -->
+    <path d="M88 118V52C88 41 95 34 106 34H174C183 34 189 39 193 47" stroke="#29281F" stroke-width="9"/>
+    <path d="M88 118C88 130 94 137 104 140" stroke="#29281F" stroke-width="9"/>
+    <!-- Front invoice sheet -->
+    <path d="M135 72H205L230 97V177C230 185 225 190 217 190H135C126 190 121 184 121 176V86C121 78 127 72 135 72Z" stroke="#B99A4D" stroke-width="9"/>
+    <path d="M205 73V91C205 96 209 99 214 99H229" stroke="#B99A4D" stroke-width="8"/>
+    <!-- Invoice lines -->
+    <path d="M151 116H202M151 143H202M151 169H188" stroke="#B99A4D" stroke-width="7"/>
+  </g>
+  <text x="160" y="267" text-anchor="middle" fill="#29281F" font-family="Georgia, 'Times New Roman', serif" font-size="65" font-weight="400" letter-spacing="12">ATI</text>
+</svg>
